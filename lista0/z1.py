@@ -23,11 +23,12 @@ def load_json(name: str) -> None:
 
 def get_json(url: str) -> None:
     content = urllib.request.urlopen(url).read()
-    data = json.loads(content, sort_keys=True)
-    data = sorted(data, key=lambda x: x['name'], reverse=True)
+    data = json.loads(content)
+    data = sorted(data, key=lambda x: x['name'], reverse=False)
     print(data)
 
 if __name__ == '__main__':
     # filename = str(input("Nazwa Pliku: "))
     # binka(filename)
-    load_json("test.json")
+    #load_json("test.json")
+    get_json("https://raw.githubusercontent.com/Wysciguvvka/IoT/main/lista0/file.json")
