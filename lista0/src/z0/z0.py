@@ -1,31 +1,34 @@
 import urllib.request
 import json
+from pathlib import Path
 
 
-def edit_binary(name: str) -> bytes:
+def edit_binary(name: str | Path) -> bytes:
     """
     funkcja odpowiedzialna za wczytanie oraz edycję pliku binarnego.
     na początek pliku binarnego dopisane zostają: b'\xFF\xD8\xFF'.
 
-    :param name: string = nazwa pliku json.
+    :param name: string | Path = nazwa pliku json.
     :return: bytes = zawartość pliku binarnego po edycji.
     """
-    with open(f'{name}', 'r+b') as file:
+    _path = Path(name) if isinstance(name, str) else name
+    with open(_path, 'r+b') as file:
         _bytes = b'\xFF\xD8\xFF'
         file.seek(0)
         data = file.read()
-    with open(f'bin_{name}', 'w+b') as new_file:
+    new_path = Path(_path.parent) / f'bin_{_path.name}'
+    with open(new_path, 'w+b') as new_file:
         new_file.write(_bytes)
         new_file.write(data)
         new_file.seek(0)
         return new_file.read()
 
 
-def edit_json(name: str, key: str, val: any) -> dict | list:
+def edit_json(name: str | Path, key: str, val: any) -> dict | list:
     """
     Funkcja odpowiedzialna za wczytanie oraz edycję pliku json.
 
-    :param name: string = nazwa pliku json.
+    :param name: string | Path = nazwa pliku json.
     :param key: string = klucz w pliku json który będzie zmieniany.
     :param val: string = nowa wartość podanego wcześniej klucza.
     :return: dict | list = zawartość pliku json po edycji.
@@ -35,12 +38,9 @@ def edit_json(name: str, key: str, val: any) -> dict | list:
             data = json.load(file)
         except ValueError:
             raise ValueError("Nie udało się odczytać pliku json")
-        try:
-            data[key] = val
-            file.seek(0)
-            json.dump(data, file, indent=4)
-        except KeyError:
-            raise KeyError("Nie znaleziono klucza w pliku json")
+        data[key] = val
+        file.seek(0)
+        json.dump(data, file, indent=4)
         return data
 
 
@@ -56,11 +56,16 @@ def get_json(url: str, key: str = 'name') -> list:
         data = json.loads(content)
     except ValueError:
         raise ValueError("Nie udało się odczytać pliku json")
-    data = sorted(data, key=lambda x: x[key], reverse=False)
+    try:
+        data = sorted(data, key=lambda x: x[key], reverse=False)
+    except KeyError:
+        raise KeyError("Nie znaleziono klucza")
     return data
 
 
-if __name__ == '__main__':
-    print(edit_binary('file.json'))
+if __name__ == '__main__':  # pragma: no cover
+    with open('file.bin', 'w+b') as test_file:
+        test_file.write(b'\x00\x00\x00')
+    print(edit_binary('file.bin'))
     print(edit_json('test.json', 'name', 'test_name'))
     print(get_json("https://pastebin.com/raw/xCiX51aK"))

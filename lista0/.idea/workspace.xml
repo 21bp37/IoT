@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4c96ea33-2ee3-4724-8b73-721767db8545" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/z1/z1.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/z1/z1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/lista0.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/lista0.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/z1/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/z1/bin_file.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/z1/file.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/z1/test.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/z1/z1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_z1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_z0.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,8 +43,8 @@
       <recent name="C:\Projects\Python projects\IoT\lista0\src\z1" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.z1 (1)">
-    <configuration name="test_z1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.z0">
+    <configuration name="test_z0" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="lista0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -48,7 +56,28 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_z1.py" />
+      <option name="SCRIPT_NAME" value="C:\Projects\Python projects\IoT\lista0\tests\test_z0.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="z0" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="lista0" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/z0" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/z0/z0.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -101,8 +130,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.z0" />
         <item itemvalue="Python.z1 (1)" />
-        <item itemvalue="Python.test_z1" />
+        <item itemvalue="Python.test_z0" />
         <item itemvalue="Python.z1" />
       </list>
     </recent_temporary>
