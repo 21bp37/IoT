@@ -2,16 +2,23 @@ import urllib.request
 import json
 
 
-def binka(name: str) -> None:
+def binary_edit(name: str) -> bytes:
     with open(f'{name}', 'r+b') as file:
-        pass
+        _bytes = b'\xFF\xD8\xFF'
+        file.seek(0)
+        data = file.read()
+    with open(f'bin_{name}', 'w+b') as new_file:
+        # new_file.seek(0)
+        new_file.write(_bytes)
+        new_file.write(data)
+        return new_file.read()
 
 
-def load_json(name: str) -> None:
+def load_json(name: str) -> dict:
     with open(f'{name}', 'r+') as file:
         data = json.load(file)
         _id = str(input("Wpisz id do zmodyfikowania: "))
-        _val = str(input("Wpisz id nowa wartosc: "))
+        _val = str(input("Wpisz nowa wartosc: "))
         try:
             data[_id] = _val
             file.seek(0)
@@ -19,16 +26,19 @@ def load_json(name: str) -> None:
         except KeyError:
             print('nie znaleziono klucza')
         print(data)
+        return data
 
 
-def get_json(url: str) -> None:
+def get_json(url: str) -> list:
     content = urllib.request.urlopen(url).read()
     data = json.loads(content)
     data = sorted(data, key=lambda x: x['name'], reverse=False)
     print(data)
+    return data
+
 
 if __name__ == '__main__':
     # filename = str(input("Nazwa Pliku: "))
-    # binka(filename)
-    #load_json("test.json")
+    binary_edit('file.json')
+    load_json("test.json")
     get_json("https://raw.githubusercontent.com/Wysciguvvka/IoT/main/lista0/file.json")
