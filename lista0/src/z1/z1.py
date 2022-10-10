@@ -7,8 +7,8 @@ def edit_binary(name: str) -> bytes:
     funkcja odpowiedzialna za wczytanie oraz edycję pliku binarnego.
     na początek pliku binarnego dopisane zostają: b'\xFF\xD8\xFF'.
 
-    :param name: -- string - nazwa pliku json.
-    :return: -- bytes - zawartość pliku binarnego po edycji.
+    :param name: string = nazwa pliku json.
+    :return: bytes = zawartość pliku binarnego po edycji.
     """
     with open(f'{name}', 'r+b') as file:
         _bytes = b'\xFF\xD8\xFF'
@@ -25,10 +25,10 @@ def edit_json(name: str, key: str, val: any) -> dict | list:
     """
     Funkcja odpowiedzialna za wczytanie oraz edycję pliku json.
 
-    :param name: -- string - nazwa pliku json.
-    :param key: -- string - klucz w pliku json który będzie zmieniany.
-    :param val: -- string - nowa wartość podanego wcześniej klucza.
-    :return: -- dict | list - zawartość pliku json po edycji.
+    :param name: string = nazwa pliku json.
+    :param key: string = klucz w pliku json który będzie zmieniany.
+    :param val: string = nowa wartość podanego wcześniej klucza.
+    :return: dict | list = zawartość pliku json po edycji.
     """
     with open(f'{name}', 'r+') as file:
         try:
@@ -47,9 +47,9 @@ def edit_json(name: str, key: str, val: any) -> dict | list:
 def get_json(url: str, key: str = 'name') -> list:
     """
     Funkcja odpowiedzialna za wczytanie  oraz posortowanie pliku json z adresu URL (HTTP GET).
-    :param url: -- string - adres url z któego zostanie pobrany plik json.
-    :param key: -- string - klucz według którego będzie sortowany plik.
-    :return: -- list - posortowana lista z pliku json.
+    :param url: string = adres url z któego zostanie pobrany plik json.
+    :param key: string = klucz według którego będzie sortowany plik.
+    :return: list = posortowana lista z pliku json.
     """
     content = urllib.request.urlopen(url).read()
     try:
