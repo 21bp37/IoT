@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4c96ea33-2ee3-4724-8b73-721767db8545" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/z1/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/lista0.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/lista0.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin_file.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/z1/bin_file.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/z1/file.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/z1/test.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_z1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_z1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/z1.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/z1/z1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/z1/z1.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/z1/z1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
