@@ -1,6 +1,6 @@
 import pytest
 
-from z0.z0 import *
+from pisklak.lista0 import *
 
 
 def test_edit_binary(tmp_path):
