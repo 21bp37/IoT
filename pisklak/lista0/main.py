@@ -1,6 +1,9 @@
+from pathlib import Path
+
 import urllib.request
 import json
-from pathlib import Path
+
+import typing
 
 
 def edit_binary(name: str | Path) -> bytes:
@@ -24,7 +27,7 @@ def edit_binary(name: str | Path) -> bytes:
         return new_file.read()
 
 
-def edit_json(name: str | Path, key: str, val: any) -> dict | list:
+def edit_json(name: str | Path, key: str, val: typing.Any) -> dict | list:
     """
     Funkcja odpowiedzialna za wczytanie oraz edycję pliku json.
 
