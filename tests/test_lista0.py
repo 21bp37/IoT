@@ -1,6 +1,7 @@
 import pytest
-
-from pisklak.lista0 import *
+import json
+import urllib.request
+from pisklak.lista0 import edit_binary, edit_json, get_json
 
 
 def test_edit_binary(tmp_path):
@@ -37,17 +38,17 @@ def test_get_json():
         {"name": "B"},
         {"name": "Z"},
         {"name": "Q"},
-        {"name": "C"},
+        {"name": "C"}
         {"name": "F"}
         ]""")
     sorted_json = json.loads(
         """[
-        {"name": "A"}, 
-        {"name": "B"}, 
-        {"name": "C"}, 
-        {"name": "E"}, 
-        {"name": "F"}, 
-        {"name": "Q"}, 
+        {"name": "A"},
+        {"name": "B"},
+        {"name": "C"},
+        {"name": "E"},
+        {"name": "F"},
+        {"name": "Q"},
         {"name": "Z"}
         ]""")
     url = 'https://pastebin.com/raw/xCiX51aK'
