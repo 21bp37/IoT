@@ -38,7 +38,7 @@ def test_get_json():
         {"name": "B"},
         {"name": "Z"},
         {"name": "Q"},
-        {"name": "C"}
+        {"name": "C"},
         {"name": "F"}
         ]""")
     sorted_json = json.loads(
