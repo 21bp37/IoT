@@ -1,16 +1,16 @@
 [build-system]
-requires = ["flit_core>=3.2"]
-build-backend = "flit_core.buildapi"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
+[tool.poetry]
 name = "pisklak"
 version = "0.0.1"
 description = "projekt na IoT"
+authors = ["Wysciguvvka"]
 readme = "README.md"
-requires-python = ">=3.10"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
+packages = [
+    { include = "pisklak" },
+    { include = "pisklak_client" },
 ]
 
 [tool.pytest.ini_options]

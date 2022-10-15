@@ -1,7 +1,7 @@
 import pytest
 import json
 import urllib.request
-from pisklak.lista0 import edit_binary, edit_json, get_json
+from pisklak_client.z0 import edit_binary, edit_json, get_json
 
 
 def test_edit_binary(tmp_path):
