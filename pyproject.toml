@@ -1,0 +1,20 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pisklak"
+version = "0.0.1"
+description = "projekt na IoT"
+authors = ["Wysciguvvka"]
+readme = "README.md"
+packages = [
+    { include = "pisklak" },
+    { include = "pisklak_client" },
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=pisklak"
+testpaths = [
+    "tests",
+]
