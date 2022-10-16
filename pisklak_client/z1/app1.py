@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 def post_file(path: str | Path, url: str = 'http://127.0.0.1:5000') -> requests.Response:
-    with open(path, 'rb') as f:
+    with open(path, 'r+') as f:
         # path = Path(path) if isinstance(path, str) else path
         r = requests.post(url, files={'file': f})
         return r
