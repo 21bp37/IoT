@@ -15,4 +15,4 @@ def get_line(filename: str, line: int, url: str = 'http://127.0.0.1:5000') -> st
 
 if __name__ == '__main__':
     print(post_file('./files/test.txt').reason)
-    print(get_line('./test.txt', -1))
+    print(get_line('./test.txt', 4))

@@ -24,6 +24,7 @@ def create_app(test_config=None):
         return 'witanie'
 
     with app.app_context():
-        import pisklak.z1.views  # noqa: F401
+        import pisklak.z1.views as file_handler
+        app.register_blueprint(file_handler.mod)
 
     return app

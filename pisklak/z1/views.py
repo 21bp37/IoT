@@ -1,11 +1,13 @@
 import os
-from flask import flash, request, current_app
+from flask import Blueprint, flash, request, current_app
 from werkzeug.utils import secure_filename
 from pathlib import Path
 
+mod = Blueprint('file_handler', __name__)
 
-@current_app.route('/', methods=['GET', 'POST'])
-def upload_file():
+
+@mod.route('/', methods=['GET', 'POST'])
+def request_file_handler():
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -26,7 +28,7 @@ def upload_file():
             if os.path.commonprefix(
                     (os.path.realpath(requested_path), os.path.realpath(current_app.config['UPLOAD_FOLDER']))) \
                     != os.path.realpath(current_app.config['UPLOAD_FOLDER']):
-                return 'Bad user'
+                return 'Permissions denied'
             try:
                 with open(requested_path, 'r') as requested_file:
                     return requested_file.readlines()[int(request.args.get('line')) - 1]
@@ -37,4 +39,4 @@ def upload_file():
             except IndexError:
                 return 'line not found'
 
-    return current_app.config['UPLOAD_FOLDER']
+    return 'Request'
