@@ -27,10 +27,10 @@ class TestFileHandler:
         assert self.client.get(f'{request.host_url}?file=../pisklak/__init__.py&line=2').status_code == 400
 
     def test_get_non_integer_line(self):
-        assert self.client.get(f'{request.host_url}?file=test_file.txt&line=0.1').status_code == 400
+        assert self.client.get(f'{request.host_url}?file=preloaded_file.txt&line=0.1').status_code == 400
 
     def test_get_line_does_not_exists(self):
-        assert self.client.get(f'{request.host_url}?file=test_file.txt&line=22').status_code == 422
+        assert self.client.get(f'{request.host_url}?file=preloaded_file.txt&line=22').status_code == 422
 
     def test_get_file_does_not_exists(self):
         assert self.client.get(f'{request.host_url}?file=file_that_not.exists&line=12').status_code == 404
