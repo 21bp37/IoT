@@ -3,9 +3,9 @@ import os
 from flask import Flask
 
 
-def create_app(test_config=None):
+def create_app(test_config=None) -> Flask:
     app = Flask(__name__, instance_relative_config=True)
-    app.secret_key = '2137'
+    app.secret_key = 'secret_key'
     # app.config.from_mapping()
 
     if test_config is None:
@@ -22,10 +22,12 @@ def create_app(test_config=None):
     # @app.route('/')
     @app.route('/index')
     def index():
-        return 'witanie'
+        return 'strona'
 
     with app.app_context():
         import pisklak.z1.views as file_handler
+        import pisklak.z2.views as json_mqtt
         app.register_blueprint(file_handler.mod)
+        app.register_blueprint(json_mqtt.mod)
 
     return app
