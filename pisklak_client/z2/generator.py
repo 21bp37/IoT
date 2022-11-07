@@ -10,7 +10,7 @@ import requests
 
 
 def publisher(broker: str = 'test.mosquitto.org') -> None:
-    client = mqtt.Client('papiez2137')
+    client = mqtt.Client('pisklak123')
     client.connect(broker, 1883)
     client.loop_start()
 
@@ -51,7 +51,7 @@ def publisher(broker: str = 'test.mosquitto.org') -> None:
             break
 
 
-def listener(broker: str = 'test.mosquitto.org') -> None:
+def subscriber(broker: str = 'test.mosquitto.org') -> None:
 
     def on_connect(client, _userdata, _flags, rc):
         client.subscribe('pisklak_ram')
@@ -67,7 +67,7 @@ def listener(broker: str = 'test.mosquitto.org') -> None:
         print(f'Received: {res.text}')
         # post request
 
-    mqttc = mqtt.Client('papiez2138')
+    mqttc = mqtt.Client('pisklak321')
     mqttc.connect(broker, 1883)
     mqttc.on_connect = on_connect
     mqttc.on_message = on_message
@@ -77,7 +77,7 @@ def listener(broker: str = 'test.mosquitto.org') -> None:
 if __name__ == '__main__':
     from threading import Thread
 
-    th2 = Thread(target=listener)
+    th2 = Thread(target=subscriber)
     th1 = Thread(target=publisher)
     th1.daemon = True
     th2.daemon = True
