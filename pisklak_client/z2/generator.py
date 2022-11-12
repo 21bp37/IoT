@@ -9,6 +9,19 @@ from datetime import datetime
 import requests
 
 
+def publish_single(broker: str = 'test.mosquitto.org') -> None:
+    def on_connect(_client, _userdata, _flags, rc):
+        if rc == 0:
+            print("Connected to MQTT Broker!")
+        else:
+            print("Failed to connect, return code %d\n", rc)
+
+    client = mqtt.Client('pisklak')
+    client.username_pw_set('pisklak', 'aaa')
+    client.on_connect = on_connect
+    client.connect(broker, 443)
+
+
 def publisher(broker: str = 'test.mosquitto.org') -> None:
     client = mqtt.Client('pisklak123')
     client.connect(broker, 1883)
@@ -52,7 +65,6 @@ def publisher(broker: str = 'test.mosquitto.org') -> None:
 
 
 def subscriber(broker: str = 'test.mosquitto.org') -> None:
-
     def on_connect(client, _userdata, _flags, rc):
         client.subscribe('pisklak_ram')
         print(f"Connection returned result: {mqtt.connack_string(rc)}")
@@ -75,8 +87,8 @@ def subscriber(broker: str = 'test.mosquitto.org') -> None:
 
 
 if __name__ == '__main__':
+    """
     from threading import Thread
-
     th2 = Thread(target=subscriber)
     th1 = Thread(target=publisher)
     th1.daemon = True
@@ -85,3 +97,5 @@ if __name__ == '__main__':
     th1.start()
     th2.join()
     th1.join()
+    """
+    publish_single()

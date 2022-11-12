@@ -19,7 +19,6 @@ def create_app(test_config=None) -> Flask:
     except OSError:
         pass
 
-    # @app.route('/')
     @app.route('/index')
     def index():
         return 'strona'
@@ -27,7 +26,9 @@ def create_app(test_config=None) -> Flask:
     with app.app_context():
         import pisklak.z1.views as file_handler
         import pisklak.z2.views as json_mqtt
+        import pisklak.z3.views as json_z3
         app.register_blueprint(file_handler.mod)
         app.register_blueprint(json_mqtt.mod)
+        app.register_blueprint(json_z3.mod)
 
     return app
