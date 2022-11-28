@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO  # type: ignore
 
 app_socketio = SocketIO(logger=True, engineio_logger=True, async_handlers=True)
 
@@ -39,4 +39,3 @@ def create_app(test_config=None) -> Flask:
 
     app_socketio.init_app(app)
     return app
-

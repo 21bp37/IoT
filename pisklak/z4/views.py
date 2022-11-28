@@ -2,7 +2,7 @@ import logging
 
 from flask import Blueprint, request, session, render_template
 from .. import app_socketio
-import flask_socketio
+import flask_socketio  # type: ignore
 
 mod = Blueprint('flask_socketio', __name__)
 print(app_socketio)
