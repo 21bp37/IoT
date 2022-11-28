@@ -3,7 +3,7 @@ from flask import Blueprint, request, current_app, make_response, Response
 from pathlib import Path
 import logging
 
-mod = Blueprint('json_file', __name__)
+mod = Blueprint('json_file_z2', __name__)
 
 
 @mod.route('/z2', methods=['GET', 'POST'])

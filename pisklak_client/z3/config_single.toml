@@ -1,0 +1,5 @@
+data_source = '../datasets/beach_weather.csv'
+url = 'test.mosquitto.org'
+protocol = 'mqtt'
+interval = 1
+delim = ';'

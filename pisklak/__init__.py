@@ -1,6 +1,9 @@
 import os
 
 from flask import Flask
+from flask_socketio import SocketIO
+
+app_socketio = SocketIO(logger=True, engineio_logger=True, async_handlers=True)
 
 
 def create_app(test_config=None) -> Flask:
@@ -27,8 +30,13 @@ def create_app(test_config=None) -> Flask:
         import pisklak.z1.views as file_handler
         import pisklak.z2.views as json_mqtt
         import pisklak.z3.views as json_z3
+        import pisklak.z4.views as flask_socket
+
         app.register_blueprint(file_handler.mod)
         app.register_blueprint(json_mqtt.mod)
         app.register_blueprint(json_z3.mod)
+        app.register_blueprint(flask_socket.mod)
 
+    app_socketio.init_app(app)
     return app
+

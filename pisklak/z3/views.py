@@ -14,7 +14,7 @@ def request_json_handler() -> Response:
             return make_response('No json part', 422)
         if content == '':
             return make_response('Json  not found', 400)
-        with open(Path(current_app.config['UPLOAD_FOLDER']) / 'z2' / 'file.json', 'a+') as file_json:
+        with open(Path(current_app.config['UPLOAD_FOLDER']) / 'z3' / 'file.json', 'a+') as file_json:
             try:
                 file_json.seek(0)
                 data = json.load(file_json)

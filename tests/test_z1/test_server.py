@@ -1,7 +1,6 @@
 import pytest
-import json
 import io
-from flask import request, url_for
+from flask import request
 
 
 @pytest.mark.usefixtures('client_class')
@@ -35,14 +34,3 @@ class TestFileHandler:
 
     def test_get_file_does_not_exists(self) -> None:
         assert self.client.get(f'{request.host_url}?file=file_that_not.exists&line=12').status_code == 404
-
-
-@pytest.mark.usefixtures('client_class')
-class TestJsonHandler:
-    def test_post_json(self):
-        json_data = json.dumps(
-            {
-                "test1": "0.1",
-                "test2": "21.37"
-            })
-        assert self.client.post(url_for('json_file.request_json_handler'), json=json_data).status_code == 200
