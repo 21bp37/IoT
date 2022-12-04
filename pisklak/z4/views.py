@@ -5,7 +5,7 @@ from .. import app_socketio
 import flask_socketio  # type: ignore
 
 mod = Blueprint('flask_socketio', __name__)
-print(app_socketio)
+# print(app_socketio)
 
 clients = []
 

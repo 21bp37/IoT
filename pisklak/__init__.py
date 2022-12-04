@@ -30,12 +30,14 @@ def create_app(test_config=None) -> Flask:
         import pisklak.z1.views as file_handler
         import pisklak.z2.views as json_mqtt
         import pisklak.z3.views as json_z3
-        import pisklak.z4.views as flask_socket
+        # import pisklak.z4.views as flask_socket
+        import pisklak.z5.views as flask_z5
 
         app.register_blueprint(file_handler.mod)
         app.register_blueprint(json_mqtt.mod)
         app.register_blueprint(json_z3.mod)
-        app.register_blueprint(flask_socket.mod)
+        # app.register_blueprint(flask_socket.mod)
+        app.register_blueprint(flask_z5.mod)
 
     app_socketio.init_app(app)
     return app
