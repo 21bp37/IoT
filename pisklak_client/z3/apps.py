@@ -11,7 +11,6 @@ from urllib.parse import urlparse
 import paho.mqtt.client as mqtt
 import requests
 import toml
-import socketio
 
 
 def load_config(conf_path: str | Path = 'config.toml') -> dict:
@@ -32,7 +31,6 @@ class Publisher:
         self.delim: str = delim
         self.app_name: str = app_name
         # SocketIO
-        self.sio = socketio.Client()
         self.listener = Thread(target=self.setup)
         self.listener.daemon = True
         self.listener.start()
@@ -43,12 +41,6 @@ class Publisher:
 
     def __start(self, reader: csv.DictReader) -> None:
         self.publish_any(dataset=reader)
-        """if self.protocol == 'http':
-            self.publish_http(dataset=reader)
-            return
-        if self.protocol == 'mqtt':
-            self.publish_mqtt(dataset=reader)
-            return"""
 
     def start(self, path: str | Path = None) -> None:
         path = self.data_source if not path else path
@@ -122,29 +114,8 @@ class Publisher:
                 requests.post(f'{self.url}', json=json_data)
         return
 
-    def callbacks(self):
-        @self.sio.event
-        def connect():
-            print(f'Connected {self.app_name}')
-            self.sio.emit('register', {'name': self.app_name,
-                                       'protocol': self.protocol,
-                                       'interval': self.interval,
-                                       'data_source': self.data_source,
-                                       'url': self.url
-                                       })
-
-        @self.sio.on('update')
-        def on_message(data):
-            print(f"New config: {data}")
-            self.data_source = Path(data['data_source'])
-            self.protocol = str(data['protocol'])
-            self.url = str(data['url'])
-            self.interval = float(data['interval'])
-
     def setup(self):
-        self.callbacks()
         print('connecting')
-        self.sio.connect('http://localhost:5000', wait_timeout=10)
 
 
 if __name__ == '__main__':  # pragma: no cover

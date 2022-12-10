@@ -29,7 +29,19 @@
         <p>Interwał [s]: <input name="interval" value="{{ client['interval'] }}"> </input></p>
 
         <input type="hidden" name="uuid" value="{{ client['uuid'] }}">
-        <button type='submit'>Aktualizuj</button>
+        <button type='submit' name="update">Aktualizuj</button>
+    </div>
+    </form>
+    <form action="{{url_for('flask_z5.generators', id=client['uuid'])}}" method='POST'>
+    <div class='generator'>
+        <input type="hidden" name="uuid" value="{{ client['uuid'] }}">
+        <button type='submit' name="pause">Zatrzymaj</button>
+    </div>
+    </form>
+    <form action="{{url_for('flask_z5.generators', id=client['uuid'])}}" method='POST'>
+    <div class='generator'>
+        <input type="hidden" name="uuid" value="{{ client['uuid'] }}">
+        <button type='submit' name="start">Wznów</button>
     </div>
     </form>
     <a href="{{
