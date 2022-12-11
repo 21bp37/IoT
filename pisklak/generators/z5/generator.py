@@ -102,11 +102,11 @@ class Publisher:
             if self.protocol == 'mqtt':
                 if client is None:
                     client = self.connect_mqtt()
-                    if client is not None:
-                        logging.warning(
-                            f'mqtt: {self.app_name}: published topic {self.source_name} with inerval {self.interval}\n')
-                        # print(json_data)
-                        client.publish(self.source_name, json_data)
+                if client is not None:
+                    logging.warning(
+                        f'mqtt: {self.app_name}: published topic {self.source_name} with inerval {self.interval}\n')
+                    # print(json_data)
+                    client.publish(self.source_name, json_data)
             if self.protocol == 'http':
                 if client is not None:
                     client = None

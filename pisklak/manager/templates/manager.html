@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generatory</title>
+    <style>
+        body{
+        background-color: #f8f8ff;
+        }
+        .generator {
+            padding: 10px;
+            margin: 5px;
+            background-color: #f3f3f3
+        }
+        input{
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    {% block content %}
+    <form action="{{url_for('flask_z5.generators2', ip=client['address'])}}" method='POST'>
+    <div class='generator'>
+        <h3>Generator: {{ client['name'] }}; status: {{ client['status'] }}</h3>
+        <p>Adres docelowy: <input name="url" value="{{ client['url'] }}"> </input></p>
+        <p>Protokół: <input name="protocol" value="{{ client['protocol'] }}"> </input></p>
+        <p>Źródło danych: <input name="source" value="{{ client['data_source'] }}"> </input></p>
+        <p>Interwał [s]: <input name="interval" value="{{ client['interval'] }}"> </input></p>
+
+        <input type="hidden" name="ip" value="{{ client['address'] }}">
+        <button type='submit' name="update">Aktualizuj</button>
+    </div>
+    </form>
+    <form action="{{url_for('flask_z5.generators2', ip=client['address'])}}" method='POST'>
+    <div class='generator'>
+        <input type="hidden" name="ip" value="{{ client['uuid'] }}">
+        <button type='submit' name="pause">Zatrzymaj</button>
+    </div>
+    </form>
+    <form action="{{url_for('flask_z5.generators2', ip=client['address'])}}" method='POST'>
+    <div class='generator'>
+        <input type="hidden" name="ip" value="{{ client['address'] }}">
+        <button type='submit' name="start">Wznów</button>
+    </div>
+    </form>
+    <a href="{{
+                url_for('flask_z5.generators2')
+                }}">Powrót</a>
+    {% endblock %}
+</div>
+</body>
+</html>

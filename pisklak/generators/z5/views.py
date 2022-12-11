@@ -43,3 +43,18 @@ def update():
         except KeyError:
             return make_response('key error', 500)
     return generator.status
+
+
+@mod.route('/status', methods=['GET', 'POST'])
+def status():
+    generator = current_app.config['generator']
+    generator_status = {
+        'name': generator.app_name,
+        'address': generator.address,
+        'protocol': generator.protocol,
+        'interval': generator.interval,
+        'data_source': generator.data_source,
+        'url': generator.url,
+        'status': generator.status,
+    }
+    return generator_status
