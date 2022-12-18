@@ -1,6 +1,9 @@
 import time
 import threading
-from pisklak import run_manager, run_generator
+
+import requests
+
+from pisklak import run_manager, run_generator, run_aggregator
 
 
 def is_any_thread_alive(_threads: list[threading.Thread]) -> bool:
@@ -8,12 +11,20 @@ def is_any_thread_alive(_threads: list[threading.Thread]) -> bool:
 
 
 if __name__ == '__main__':
+    # manager
     manager = run_manager()
     manager_thread = threading.Thread(target=manager.run, daemon=True, kwargs={'use_reloader': False, 'port': 5000})
     manager_thread.start()
-    threads = [manager_thread]
+    # aggregator
+    aggregator = run_aggregator(port=5001)
+    aggregator_thread = threading.Thread(target=aggregator.run, daemon=True,
+                                         kwargs={'use_reloader': False, 'port': 5001})
+    aggregator_thread.start()
+    # threads
+    threads = [manager_thread, aggregator_thread]
+    # generators
     for i in range(5):
-        port = 5001 + i
+        port = 5002 + i
         generator = run_generator(port=port)
         generator_thread = threading.Thread(target=generator.run, daemon=True,
                                             kwargs={'use_reloader': False, 'port': port})

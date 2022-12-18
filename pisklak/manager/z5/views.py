@@ -2,29 +2,48 @@ import requests
 from flask import Blueprint, request, render_template
 
 mod = Blueprint('flask_z5', __name__)
-
+aggregators = []
 generator_apps = []
 gen2 = []
+
+
+@mod.route('/test', methods=['GET', 'POST'])
+def test():
+    return str(aggregators)
 
 
 @mod.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         try:
-            data = {
-                'name': request.form['name'],
-                'protocol': request.form['protocol'],
-                'interval': request.form['interval'],
-                'data_source': request.form['data_source'],
-                'url': request.form['url'],
-                'uuid': request.form['uuid'],
-                'status': request.form['status'],
-                'address': request.form['address'] if 'address' in request.form
-                else f'{request.remote_addr}:{request.environ.get("REMOTE_PORT")}'
-            }
-            gen2.append(data)
-            # generator_apps.append(data)
-            generator_apps.append(request.form['address'])
+            if 'type' not in request.form or request.form['type'] == 'generator':
+                data = {
+                    'name': request.form['name'],
+                    'protocol': request.form['protocol'],
+                    'interval': request.form['interval'],
+                    'data_source': request.form['data_source'],
+                    'url': request.form['url'],
+                    'uuid': request.form['uuid'],
+                    'status': request.form['status'],
+                    'address': request.form['address'] if 'address' in request.form
+                    else f'{request.remote_addr}:{request.environ.get("REMOTE_PORT")}'
+                }
+                gen2.append(data)
+                # generator_apps.append(data)
+                generator_apps.append(request.form['address'])
+            elif request.form['type'] == 'aggregator':
+                data = {
+                    'address': request.form['address']
+                }
+                if data in aggregators:
+                    return
+                aggregators.append(data)
+                aggregator_config = {
+                    'interval': 3600,
+                    'destination': 'test.mosquitto.org',
+                    'protocol': 'mqtt'
+                }
+                requests.post(f"http://{data['address']}/configure", data=aggregator_config)
         except KeyError:
             return 'missing config data'
     return str(generator_apps)
