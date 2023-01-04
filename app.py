@@ -15,21 +15,23 @@ if __name__ == '__main__':
     manager = run_manager()
     manager_thread = threading.Thread(target=manager.run, daemon=True, kwargs={'use_reloader': False, 'port': 5000})
     manager_thread.start()
-    # aggregator
-    aggregator = run_aggregator(port=5001)
-    aggregator_thread = threading.Thread(target=aggregator.run, daemon=True,
-                                         kwargs={'use_reloader': False, 'port': 5001})
-    aggregator_thread.start()
+
     # threads
-    threads = [manager_thread, aggregator_thread]
+    threads = [manager_thread]
     # generators
     for i in range(5):
         port = 5002 + i
-        generator = run_generator(port=port)
+        generator = run_generator(port=port,_id=i)
         generator_thread = threading.Thread(target=generator.run, daemon=True,
                                             kwargs={'use_reloader': False, 'port': port})
         threads.append(generator_thread)
         generator_thread.start()
     # generator_thread.join()
+    # aggregator
+    aggregator = run_aggregator(port=5001)
+    aggregator_thread = threading.Thread(target=aggregator.run, daemon=True,
+                                         kwargs={'use_reloader': False, 'port': 5001})
+    aggregator_thread.start()
+    threads.append(aggregator_thread)
     while is_any_thread_alive(threads):
         time.sleep(0.1)

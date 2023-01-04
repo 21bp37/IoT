@@ -6,18 +6,45 @@ from collections import Counter
 import datetime
 import requests
 import numpy as np
+import paho.mqtt.client as mqtt
 
 
 class Aggregator:
     mod: Blueprint = Blueprint('data_aggregation', __name__)
     data: list[dict] = []
     # time = time
-    time: datetime.datetime | None = None
+    time: datetime.datetime | None = datetime.datetime.now()
     config: dict = {
         'interval': int,
         'destination': str,
-        'protocol': str
+        'protocol': str,
+        'running': True
     }
+
+    @classmethod
+    def is_running(cls):
+        return cls.config['running']
+
+    @staticmethod
+    @mod.route('/status', methods=['GET', 'POST'])
+    def status():
+        return Aggregator.config
+
+    @staticmethod
+    @mod.route('/start', methods=['GET', 'POST'])
+    def start():
+        if Aggregator.is_running():
+            return make_response('Agregator juz dziala', 500)
+        Aggregator.config['running'] = True
+        return make_response(str(Aggregator.is_running()), 201)
+
+    @staticmethod
+    @mod.route('/stop', methods=['GET', 'POST'])
+    def stop():
+        if not Aggregator.is_running():
+            return make_response('Agregator juz jest zatrzymany', 500)
+        Aggregator.config['running'] = False
+        return make_response(str(Aggregator.is_running()), 201)
 
     @staticmethod
     @mod.route('/register', methods=['GET', 'POST'])
@@ -49,27 +76,47 @@ class Aggregator:
         data = a
         """
         compressed_data = {}
-        for key in data[0].keys():
-            try:
-                compressed_data[key] = np.mean([float(d[key]) for d in data], axis=0)
-            except (TypeError, ValueError):
-                collected = Counter([d[key] for d in data])
-                compressed_data[key] = collected.most_common()[0][0]
-        return compressed_data
+        try:
+            for key in data[0].keys():
+                try:
+                    compressed_data[key] = np.mean([float(d[key]) for d in data], axis=0)
+                except (TypeError, ValueError):
+                    collected = Counter([d[key] for d in data])
+                    compressed_data[key] = collected.most_common()[0][0]
+            return compressed_data
+        except IndexError:
+            return {}
 
     @classmethod
     def send_data(cls) -> bool:
         data = cls.compress_data(cls.data)
-        # send data
+        if cls.config['protocol'] == 'mqtt':
+            client = mqtt.Client('aggregator2137')
+            client.connect(cls.config['destination'], 1883)
+            client.loop_start()
+            if client is not None:
+                logging.warning(
+                    f'mqtt: aggregator: published topic data {data}\n')
+                # print(json_data)
+                client.publish('aggregator2137', json.dumps(data))
+            client.disconnect()
+        if cls.config['protocol'] == 'http':
+            try:
+                logging.warning(
+                    f'http: aggregator: published topic data {data}\n')
+                requests.post(f'{cls.config["destination"]}', json=data)
+            except (requests.exceptions.InvalidURL, requests.exceptions.RequestException) as e:
+                logging.warning(f'http: aggregator: {e}\n')
         return True
 
     @classmethod
-    def check_aggregation(cls, timestamp: datetime.datetime) -> list:
-        if abs((Aggregator.time - timestamp).total_seconds() <= Aggregator.config['interval']):
-            return cls.data
-        if Aggregator.send_data():
+    def check_aggregation(cls, timestamp: datetime.datetime) -> str:
+        if abs((cls.time - timestamp).total_seconds()) <= float(cls.config['interval']):
+            return f"{abs((cls.time - timestamp).total_seconds())}, {cls.config['interval']}"
+        if Aggregator.is_running() and Aggregator.send_data():
+            cls.time = datetime.datetime.now()
             cls.data = []
-        return cls.data
+        return str(cls.data)
 
     @classmethod
     def update_config(cls, *, interval: float, destination: str, protocol: str) -> bool:
@@ -86,9 +133,10 @@ class Aggregator:
             content = dict(request.form)
             try:
                 Aggregator.update_config(**content)
+                Aggregator.config['running'] = True
             except KeyError as e:
                 return make_response(e, 500)
-        return make_response(str(Aggregator.config), 200)
+        return make_response(Aggregator.config, 201)
 
     @staticmethod
     @mod.route('/send', methods=['GET', 'POST'])
@@ -104,14 +152,15 @@ class Aggregator:
             json_data = json.loads(content)
             Aggregator.data.append(json_data)
             # time difference calculation
-            # todo
-            try:
+            """try:
                 timestamp = datetime.datetime.timestamp(dict(json_data)['time'])
             except KeyError:
-                timestamp = datetime.datetime.now()
+                timestamp = datetime.datetime.now()"""
+            timestamp = datetime.datetime.now()
             if Aggregator.time is None:
                 Aggregator.time = timestamp
-            Aggregator.check_aggregation(timestamp)
+            if Aggregator.config['running']:
+                Aggregator.check_aggregation(timestamp)
 
             # if time difference = 1h send else append (timestamp-time) = 1h
             return make_response(json_data)
@@ -122,4 +171,4 @@ class Aggregator:
     def aggregation2() -> Response:
         collected_data = Aggregator.data
         compressed_data = Aggregator.compress_data(collected_data)
-        return make_response(str(compressed_data))
+        return make_response(compressed_data)

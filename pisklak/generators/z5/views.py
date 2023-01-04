@@ -35,10 +35,14 @@ def update():
     generator = current_app.config['generator']
     if request.method == 'POST':
         try:
-            generator.protocol = request.form['protocol']
-            generator.interval = float(request.form['interval'])
-            generator.data_source = request.form['data_source']
-            generator.url = request.form['url']
+            if 'protocol' in request.form:
+                generator.protocol = request.form['protocol']
+            if 'interval' in request.form:
+                generator.interval = float(request.form['interval'])
+            if 'data_source' in request.form:
+                generator.data_source = request.form['data_source']
+            if 'url' in request.form:
+                generator.url = request.form['url']
             return make_response(generator.status, 201)
         except KeyError:
             return make_response('key error', 500)

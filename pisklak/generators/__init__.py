@@ -5,7 +5,7 @@ from .z5.generator import run_publishers
 from flask import Flask
 
 
-def run_generator(test_config=None, *, ip: str = '127.0.0.1', port: int = None) -> Flask:
+def run_generator(test_config=None, *, ip: str = '127.0.0.1', port: int = None, _id: int = 0) -> Flask:
     app = Flask(__name__, instance_relative_config=True)
     app.secret_key = 'secret_key'
     # run generator in thread -> app.config['generator']
@@ -22,8 +22,8 @@ def run_generator(test_config=None, *, ip: str = '127.0.0.1', port: int = None) 
         pass
     # generator
     q: queue.Queue = queue.Queue()
-    run_publishers(f'generator:{port}', str(uuid.uuid4()), './pisklak/generators/z5/config_single.toml', q,
-                   address=f'{ip}:{port}')
+    run_publishers(f'generator:{port}', str(uuid.uuid4()), f'./pisklak/generators/z5/config{_id}.toml', q,
+                   address=f'{ip}:{port}', )
     app.config['generator'] = q.get()
 
     # routes

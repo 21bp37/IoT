@@ -1,4 +1,4 @@
-data_source = './pisklak_client/datasets/oil_rig0.csv'
+data_source = './pisklak_client/datasets/oil_rig1.csv'
 url = 'test.mosquitto.org'
 protocol = 'mqtt'
 interval = 5
