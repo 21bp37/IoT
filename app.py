@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     # threads
     threads = [manager_thread]
-    """
+
     # generators
     for i in range(5):
         port = 5008 + i
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     aggregator_thread = threading.Thread(target=aggregator.run, daemon=True,
                                          kwargs={'use_reloader': False, 'port': 5001})
     aggregator_thread.start()
-    threads.append(aggregator_thread)"""
+    threads.append(aggregator_thread)
     # kontroler
     controller = run_controller(port=5004)
     controller_thread = threading.Thread(target=controller.run, daemon=True,

@@ -45,7 +45,7 @@ class Controller:
 
 class ControllerRoutes:
     mod: Blueprint = Blueprint('controller', __name__)
-    controller: Controller = None
+    controller: Controller  # = None
     last_received = None
 
     @classmethod

@@ -4,7 +4,7 @@ import logging
 from flask import Blueprint, request, make_response, Response, current_app
 import datetime
 import requests
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt  # type: ignore
 
 
 class Filter2:
@@ -77,14 +77,16 @@ class Filter2:
     @classmethod
     def update_config(cls, *, source: str, destination: str, protocol: str, filters: list | str) -> bool:
         try:
-            config = {'source': str(source),
-                      'destination': str(destination),
-                      'protocol': str(protocol)
-                      }
+            config = {
+                'source': str(source),
+                'destination': str(destination),
+                'protocol': str(protocol),
+                'filter': list
+            }
             if not isinstance(filters, list):
                 config['filter'] = json.loads(filters)
             else:
-                config['filter'] = filters
+                config['filter'] = list(filters)
             cls.configs.append(config)
             return True
         except ValueError:

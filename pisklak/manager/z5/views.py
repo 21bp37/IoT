@@ -4,9 +4,9 @@ import requests
 from flask import Blueprint, request, render_template, make_response
 
 mod = Blueprint('flask_z5', __name__)
-aggregators = []
-generator_apps = []
-filters = []
+aggregators: list[dict] = []
+generator_apps: list[str] = []
+filters: list[dict] = []
 
 
 # gen2 = []
@@ -59,8 +59,9 @@ def register():
                     return make_response('filtr jest już zarejestrowany', 500)
                 filters.append(data)
                 ####
-                """Zrobione na potrzeby debugowania kodu: wysyłanie configu przy rejestacji 
-                (post zarejestruj filtr, dane: adres, config)-> zarządca -(post config)-> filtr) 
+                """
+                Zrobione na potrzeby debugowania kodu: wysyłanie configu przy rejestacji
+                (post zarejestruj filtr, dane: adres, config)-> zarządca -(post config)-> filtr)
                  przesłania forma ręcznie
                 """
                 if 'config' in request.form:
@@ -74,7 +75,6 @@ def register():
                     }
                 #######
                 requests.post(f"http://{data['address']}/configure", data=filter_config)
-
                 """druga implementacja filtru (z podanym adresem źródła)"""
                 filter_config = [
                     {
@@ -91,7 +91,6 @@ def register():
                     }
                 ]
                 requests.post(f"http://{data['address']}/configure2", json=filter_config)
-
         except KeyError:
             return 'missing config data'
     return str(filters)

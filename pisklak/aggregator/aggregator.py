@@ -5,8 +5,8 @@ from flask import Blueprint, request, make_response, Response, current_app
 from collections import Counter
 import datetime
 import requests
-import numpy as np
-import paho.mqtt.client as mqtt
+import numpy as np  # type: ignore
+import paho.mqtt.client as mqtt  # type: ignore
 
 
 class Aggregator:
@@ -112,20 +112,20 @@ class Aggregator:
 
     @classmethod
     def check_aggregation(cls, timestamp: datetime.datetime) -> str:
-        if abs((cls.time - timestamp).total_seconds()) <= float(cls.config['interval']):
-            return f"{abs((cls.time - timestamp).total_seconds())}, {cls.config['interval']}"
+        if abs((cls.time - timestamp).total_seconds()) <= float(cls.config['interval']):  # type: ignore
+            return f"{abs((cls.time - timestamp).total_seconds())}, {cls.config['interval']}"  # type: ignore
         if Aggregator.is_running() and Aggregator.send_data():
             cls.time = datetime.datetime.now()
             cls.data = []
         return str(cls.data)
 
     @classmethod
-    def update_config(cls, *, interval: float, destination: str, protocol: str, running: bool) -> bool:
+    def update_config(cls, *, interval: (float | str), destination: str, protocol: str, running: (str | bool)) -> bool:
         # try except..
         cls.config['interval'] = float(interval)
         cls.config['destination'] = str(destination)
         cls.config['protocol'] = str(protocol)
-        cls.config['running'] = running
+        cls.config['running'] = bool(running)
         return True
 
     @staticmethod
