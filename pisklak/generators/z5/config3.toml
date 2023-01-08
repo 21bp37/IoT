@@ -1,5 +1,5 @@
 data_source = './pisklak_client/datasets/oil_rig3.csv'
-url = 'test.mosquitto.org'
-protocol = 'mqtt'
+url = 'http://127.0.0.1:5001/send'
+protocol = 'http'
 interval = 5
 delim = ';'

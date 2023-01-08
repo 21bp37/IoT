@@ -18,7 +18,7 @@ class Aggregator:
         'interval': int,
         'destination': str,
         'protocol': str,
-        'running': True
+        'running': False
     }
 
     @classmethod
@@ -90,6 +90,7 @@ class Aggregator:
     @classmethod
     def send_data(cls) -> bool:
         data = cls.compress_data(cls.data)
+        cls.time = datetime.datetime.now()
         if cls.config['protocol'] == 'mqtt':
             client = mqtt.Client('aggregator2137')
             client.connect(cls.config['destination'], 1883)
@@ -102,8 +103,8 @@ class Aggregator:
             client.disconnect()
         if cls.config['protocol'] == 'http':
             try:
-                logging.warning(
-                    f'http: aggregator: published topic data {data}\n')
+                logging.warning(f'http: aggregator: published topic data {data}\n')
+                data['address'] = current_app.config['address']
                 requests.post(f'{cls.config["destination"]}', json=data)
             except (requests.exceptions.InvalidURL, requests.exceptions.RequestException) as e:
                 logging.warning(f'http: aggregator: {e}\n')
@@ -119,11 +120,12 @@ class Aggregator:
         return str(cls.data)
 
     @classmethod
-    def update_config(cls, *, interval: float, destination: str, protocol: str) -> bool:
+    def update_config(cls, *, interval: float, destination: str, protocol: str, running: bool) -> bool:
         # try except..
         cls.config['interval'] = float(interval)
         cls.config['destination'] = str(destination)
         cls.config['protocol'] = str(protocol)
+        cls.config['running'] = running
         return True
 
     @staticmethod
@@ -133,7 +135,7 @@ class Aggregator:
             content = dict(request.form)
             try:
                 Aggregator.update_config(**content)
-                Aggregator.config['running'] = True
+                # Aggregator.config['running'] = True
             except KeyError as e:
                 return make_response(e, 500)
         return make_response(Aggregator.config, 201)

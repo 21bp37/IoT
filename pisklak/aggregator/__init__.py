@@ -35,6 +35,10 @@ def run_aggregator(test_config=None, *, ip: str = '127.0.0.1', port: int = None)
         # reg_thread = threading.Thread(target=requests.get,
         # daemon=True, kwargs={'url': 'http://127.0.0.1:5001/register'})
         # reg_thread.start()
+        # rejestracja agregatora na adres zarządczy autoamtycznie, żeby nie rejestrować agregatora ręcznie
+        # żeby zarejestrować nowy agregator u zarządcy
+        # można wysłać posta na odpowiedni interfejs zarządcy /register
+
         reg_thread = threading.Thread(target=Aggregator.register, daemon=True,
                                       kwargs={'address': '127.0.0.1:5001'})
         reg_thread.start()

@@ -1,9 +1,12 @@
+import json
+
 import requests
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, make_response
 
 mod = Blueprint('flask_z5', __name__)
 aggregators = []
 generator_apps = []
+filters = []
 
 
 # gen2 = []
@@ -19,40 +22,91 @@ def register():
     if request.method == 'POST':
         try:
             if 'type' not in request.form or request.form['type'] == 'generator':
-                """data = {
-                    'address': request.form['address'] if 'address' in request.form
-                    else f'{request.remote_addr}:{request.environ.get("REMOTE_PORT")}'
-                }"""
-                # generator_apps.append(data)
                 generator_apps.append(str(request.form['address']))
             elif request.form['type'] == 'aggregator':
                 data = {
                     'address': request.form['address']
                 }
                 if data in aggregators:
-                    return
+                    return make_response('agregat jest już zarejestrowany', 500)
                 aggregators.append(data)
-                aggregator_config = {
-                    'interval': 8,
-                    'destination': 'test.mosquitto.org',
-                    'protocol': 'mqtt',
-                    'running': True
-                }
+                # wysyłanie configu przy rejestrajci agregatora
+                # zrobione na potrzebę zadania, żeby nie wysyłać ręcznie configu przez forma podając go zarządcy
+                # żeby sprawniej pokazać działanie zadania.
+                # zarządca wysyła posta na opdowiedni intrefejs agregatora z zadaną konfiguracją.
+                # aby zmienić ręcznie config można wysłać posta na interfejs zarządcy:
+                # ip_zarządcy/aggregators z parametrem update oraz zadaną konfiguracją.
+                # wtedy zarządca wysyła post z parametrami na interfejs agregatora.
+                # Agregator przy uruchamianiu nie ma swojej konfiguracji, dostaję ją dopiero
+                # po otrzymaniu przez zarządcę.
+                # przekazywanie conifgu w każdej z tych sytuacji pochodzi od zarządcy:
+                # Zarządca  -(post z configiem)-> agregator
+                if 'config' in request.form:
+                    aggregator_config = request.form['config']
+                else:
+                    aggregator_config = {
+                        'interval': 8,
+                        'destination': 'http://127.0.0.1:5002/send2',
+                        'protocol': 'http',
+                        'running': True
+                    }
                 requests.post(f"http://{data['address']}/configure", data=aggregator_config)
-                # zmiana configu generatorow gdy pojawi sie agregator:
-                # (zeby nie zmieniac recznie na potrzeby zadania)
-                for gen_cl in generator_apps:
-                    gen_address = gen_cl
-                    requests.post(
-                        f'http://{gen_address}/update',
-                        data={
-                            'protocol': 'http',
-                            'url': f"http://{request.form['address']}/send"
-                        }
-                    )
+            elif request.form['type'] == 'filter':
+                data = {
+                    'address': request.form['address']
+                }
+                if data in filters:
+                    return make_response('filtr jest już zarejestrowany', 500)
+                filters.append(data)
+                ####
+                """Zrobione na potrzeby debugowania kodu: wysyłanie configu przy rejestacji 
+                (post zarejestruj filtr, dane: adres, config)-> zarządca -(post config)-> filtr) 
+                 przesłania forma ręcznie
+                """
+                if 'config' in request.form:
+                    filter_config = request.form['config']
+                else:
+                    filter_config = {
+                        'destination': 'test.mosquitto.org',
+                        'protocol': 'mqtt',
+                        'running': True,
+                        'filters': json.dumps(['wind_direction', 'wind_speed', 'wind_chill'])
+                    }
+                #######
+                requests.post(f"http://{data['address']}/configure", data=filter_config)
+
+                """druga implementacja filtru (z podanym adresem źródła)"""
+                filter_config = [
+                    {
+                        'source': '127.0.0.1:5001',
+                        'destination': 'test.mosquitto.org',
+                        'protocol': 'mqtt',
+                        'filters': ['wind_direction', 'wind_speed', 'wind_chill']
+                    },
+                    {
+                        'source': '127.0.0.1:5009',
+                        'destination': 'test.mosquitto.org',
+                        'protocol': 'mqtt',
+                        'filters': ['wind_direction', 'wind_speed', 'wind_chill']
+                    }
+                ]
+                requests.post(f"http://{data['address']}/configure2", json=filter_config)
+
         except KeyError:
             return 'missing config data'
-    return str(generator_apps)
+    return str(filters)
+
+
+@mod.route('/update_filter', methods=['GET', 'POST'])
+def update_filter():
+    """Wysłanie do zarządcy nowego configu dla wskazanego filtru jeżeli byłobyto potrzebne.
+    zarządca -> filtr"""
+    if request.method == 'POST':
+        address = request.form['address']
+        if address in filters:
+            filter_config = request.form['config']
+            requests.post(f"http://{address}/configure", data=filter_config)
+    return 'config'
 
 
 @mod.route('/generators2', methods=['GET', 'POST'])

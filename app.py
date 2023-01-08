@@ -1,9 +1,7 @@
 import time
 import threading
 
-import requests
-
-from pisklak import run_manager, run_generator, run_aggregator
+from pisklak import run_manager, run_generator, run_aggregator, run_filter, run_heater, run_controller
 
 
 def is_any_thread_alive(_threads: list[threading.Thread]) -> bool:
@@ -18,20 +16,43 @@ if __name__ == '__main__':
 
     # threads
     threads = [manager_thread]
+    """
     # generators
     for i in range(5):
-        port = 5002 + i
-        generator = run_generator(port=port,_id=i)
+        port = 5008 + i
+        generator = run_generator(port=port, _id=i)
         generator_thread = threading.Thread(target=generator.run, daemon=True,
                                             kwargs={'use_reloader': False, 'port': port})
         threads.append(generator_thread)
         generator_thread.start()
+
+    # uruchomienie usługi filtrującej:
+    # adres filtru: locahlost:5002
+    _filter = run_filter(port=5002)
+    filter_thread = threading.Thread(target=_filter.run, daemon=True,
+                                     kwargs={'use_reloader': False, 'port': 5002})
+    filter_thread.start()
+    threads.append(filter_thread)
     # generator_thread.join()
     # aggregator
     aggregator = run_aggregator(port=5001)
     aggregator_thread = threading.Thread(target=aggregator.run, daemon=True,
                                          kwargs={'use_reloader': False, 'port': 5001})
     aggregator_thread.start()
-    threads.append(aggregator_thread)
+    threads.append(aggregator_thread)"""
+    # kontroler
+    controller = run_controller(port=5004)
+    controller_thread = threading.Thread(target=controller.run, daemon=True,
+                                         kwargs={'use_reloader': False, 'port': 5004})
+    controller_thread.start()
+    threads.append(controller_thread)
+
+    # grzejnik
+    heater = run_heater(port=5003)
+    heater_thread = threading.Thread(target=heater.run, daemon=True,
+                                     kwargs={'use_reloader': False, 'port': 5003})
+    heater_thread.start()
+    threads.append(heater_thread)
+
     while is_any_thread_alive(threads):
         time.sleep(0.1)

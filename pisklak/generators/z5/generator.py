@@ -18,7 +18,7 @@ def load_config(conf_path: str | Path | dict = 'config.toml') -> dict:
 
 
 class Publisher:
-    def __init__(self, data_source: str | Path = '', url: str = 'test.mosquitto.org', protocol: str = 'mqtt',
+    def __init__(self, data_source: str | Path = '', url: str = 'http://127.0.0.1:5001/send', protocol: str = 'http',
                  interval: float = 1, delim: str = ';', *, app_name: str = 'app', uuid: str = '2137',
                  manager: str = 'http://127.0.0.1:5000/register', address: str = None):
         self.paused = False
