@@ -38,5 +38,7 @@ def run_filter(test_config=None, *, ip: str = '127.0.0.1', port: int = None) -> 
         reg_thread = threading.Thread(target=Filter.register, daemon=True,
                                       kwargs={'address': app.config['address']})
         reg_thread.start()
-
+        reg_thread2 = threading.Thread(target=Filter2.register, daemon=True,
+                                       kwargs={'address': app.config['address']})
+        reg_thread2.start()
     return app

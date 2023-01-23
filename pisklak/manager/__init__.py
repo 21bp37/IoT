@@ -28,10 +28,12 @@ def run_manager(test_config=None) -> Flask:
         import pisklak.manager.z2.views as json_mqtt
         import pisklak.manager.z3.views as json_z3
         import pisklak.manager.z5.views as manager
+        import pisklak.manager.z8.views as heater
 
         app.register_blueprint(file_handler.mod)
         app.register_blueprint(json_mqtt.mod)
         app.register_blueprint(json_z3.mod)
         app.register_blueprint(manager.mod)
+        app.register_blueprint(heater.mod)
 
     return app

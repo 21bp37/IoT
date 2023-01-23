@@ -30,5 +30,6 @@ def run_heater(test_config=None, *, ip: str = '127.0.0.1', port: int = 5003) -> 
     with app.app_context():
         from pisklak.heater.heater import ElectricHeater
         app.register_blueprint(ElectricHeater.mod)
+        ElectricHeater.run()
 
     return app

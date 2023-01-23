@@ -11,10 +11,51 @@ class ElectricHeater:
     recorded_temps: list = []
     is_on: bool = False  # Aktuator DOMYŚLNIE OFF (False)
     room_temp: float = 0
-    speed_up = 1
+    speed_up = 20  # przyspieszenie działania grzejnika (na potrzeby debugowania kodu)
     temp: float = 0
     temperature: float = 0
     target: str = '127.0.0.1:5004'  # Adres sterownika
+    started = False
+
+    @staticmethod
+    @mod.route('/start_manager', methods=['GET', 'POST'])
+    def start_manager_route():
+        ElectricHeater.manager_start()
+        return str(ElectricHeater.started)
+
+    @staticmethod
+    @mod.route('/stop_manager', methods=['GET', 'POST'])
+    def stop_manager_route():
+        ElectricHeater.manager_stop()
+        return str(ElectricHeater.started)
+
+    @classmethod
+    def manager_start(cls):
+        if not cls.started:
+            print('uruchomiono grzejnik')
+            cls.started = True
+            cls.run()
+
+    @classmethod
+    def manager_stop(cls):
+        print('wylaczono grzejnik')
+        cls.started = False
+        # cls.is_on = False
+        worker = threading.Thread(target=cls.stop, daemon=True)
+        worker.start()
+        # cls.stop()
+
+    @classmethod
+    def run(cls):
+        send_thread = threading.Thread(target=cls.send_thread, daemon=True)
+        send_thread.start()
+
+    @classmethod
+    def send_thread(cls):
+        while cls.started:
+            # time.sleep(5)
+            cls.send_current_temp()
+            time.sleep(cls.interval)
 
     @classmethod
     def send_current_temp(cls):
@@ -43,6 +84,8 @@ class ElectricHeater:
     @mod.route('/start', methods=['GET', 'POST'])
     def start_route():
         power = 1500  # domyslna
+        if not ElectricHeater.started:
+            return 'grzejnik nie jest wlaczony'
         if request.method == 'POST':
             power = float(request.form['power'])
         if not ElectricHeater.is_on:
@@ -66,18 +109,20 @@ class ElectricHeater:
     def start(cls, power: float):
         if cls.is_on:
             return
+        if not cls.started:
+            return
         cls.is_on = True
         print('włączono aktuator')
         while cls.temp < 0 and cls.is_on:
             cls.temperature += cls.speed_up * 3.33 * (10 ** -6) * power * cls.interval
             cls.recorded_temps.append(cls.temperature)
             cls.temp += cls.speed_up * 0.1 / cls.interval
-            cls.send_current_temp()
+            # cls.send_current_temp()
             time.sleep(cls.interval)
         while cls.is_on:
             cls.temperature += cls.speed_up * 6.66 * (10 ** -6) * power * cls.interval
             cls.recorded_temps.append(cls.temperature)
-            cls.send_current_temp()
+            # cls.send_current_temp()
             time.sleep(cls.interval)
         cls.temp = 4 if cls.temp >= 0 else cls.temp
         cls.stop()

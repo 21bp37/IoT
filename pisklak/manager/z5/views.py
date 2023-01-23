@@ -17,6 +17,33 @@ def test():
     return str(aggregators)
 
 
+@mod.route('/register2', methods=['GET', 'POST'])
+def register_filter2():
+    if request.json and request.json != '':
+        # filter_config = request.form['config']
+        filter_config = json.loads(json.dumps(request.json))['config']
+        address = json.loads(json.dumps(request.json))['address']
+    else:
+        address = '127.0.0.1:5002'
+        filter_config = []
+        """filter_config = [
+            {
+                'source': '127.0.0.1:5001',
+                'destination': 'test.mosquitto.org',
+                'protocol': 'mqtt',
+                'filters': ['wind_direction', 'wind_speed', 'wind_chill']
+            },
+            {
+                'source': '127.0.0.1:5009',
+                'destination': 'test.mosquitto.org',
+                'protocol': 'mqtt',
+                'filters': ['wind_direction', 'wind_speed', 'wind_chill']
+            }
+        ]"""
+    requests.post(f"http://{address}/configure2", json=filter_config)
+    return ''
+
+
 @mod.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -76,7 +103,7 @@ def register():
                 #######
                 requests.post(f"http://{data['address']}/configure", data=filter_config)
                 """druga implementacja filtru (z podanym adresem źródła)"""
-                filter_config = [
+                """filter_config = [
                     {
                         'source': '127.0.0.1:5001',
                         'destination': 'test.mosquitto.org',
@@ -89,8 +116,8 @@ def register():
                         'protocol': 'mqtt',
                         'filters': ['wind_direction', 'wind_speed', 'wind_chill']
                     }
-                ]
-                requests.post(f"http://{data['address']}/configure2", json=filter_config)
+                ]"""
+                # requests.post(f"http://{data['address']}/configure2", json=filter_config)
         except KeyError:
             return 'missing config data'
     return str(filters)
@@ -105,6 +132,18 @@ def update_filter():
         if address in filters:
             filter_config = request.form['config']
             requests.post(f"http://{address}/configure", data=filter_config)
+    return 'config'
+
+
+@mod.route('/update_filter2', methods=['GET', 'POST'])
+def update_filter2():
+    """Wysłanie do zarządcy nowego configu dla wskazanego filtru jeżeli byłobyto potrzebne.
+    zarządca -> filtr"""
+    if request.method == 'POST':
+        address = request.form['address']
+        if address in filters:
+            filter_config = json.dumps(request.form['config'])
+            requests.post(f"http://{address}/configure2", json=filter_config)
     return 'config'
 
 

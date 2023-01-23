@@ -44,18 +44,35 @@ class Filter2:
 
     @staticmethod
     def register(address: str) -> int:
-        """metoda utowrzona na potrzeby debugowania kodu"""
-        manager = 'http://127.0.0.1:5000/register'
+        """metoda utowrzona na potrzeby debugowania kodu - post rejestracja filtra"""
+        manager = 'http://127.0.0.1:5000/register2'
+        config = [
+            {
+                'source': '127.0.0.1:5001',
+                'destination': 'test.mosquitto.org',
+                'protocol': 'mqtt',
+                'filters': ['wind_direction', 'wind_speed', 'wind_chill']
+            },
+            {
+                'source': '127.0.0.1:5009',
+                'destination': 'test.mosquitto.org',
+                'protocol': 'mqtt',
+                'filters': ['wind_direction', 'wind_speed', 'wind_chill']
+            }
+        ]
         data = {
             'address': address,
-            'type': 'filter'
+            'config': config
         }
-        response = requests.post(manager, data=data)
+        response = requests.post(manager, json=data)
         return response.status_code
 
     @classmethod
     def send_data(cls, data, source) -> bool:
-        config = list(filter(lambda cfg: cfg['source'] == source, cls.configs))[0]
+        try:
+            config = list(filter(lambda cfg: cfg['source'] == source, cls.configs))[0]
+        except IndexError:
+            return False
         if config['protocol'] == 'mqtt':
             client = mqtt.Client('filter2137')
             client.connect(config['destination'], 1883)
@@ -98,7 +115,9 @@ class Filter2:
         if request.method == 'POST':
             content = json.loads(json.dumps(request.json))
             logging.warning(f'\n\n\n\n{content}\n\n\n')
+            # Filter2.configs = list(content)
             try:
+                Filter2.configs = []
                 for config in content:
                     logging.warning(f'\n\n\n\n{config}\n\n\n')
                     Filter2.update_config(**dict(config))
@@ -129,7 +148,10 @@ class Filter2:
 
     @classmethod
     def filter_data(cls, data: dict, source) -> dict:
-        config = list(filter(lambda cfg: cfg['source'] == source, cls.configs))[0]
+        try:
+            config = list(filter(lambda cfg: cfg['source'] == source, cls.configs))[0]
+        except IndexError:
+            return data
         if not config:
             return data
         if not config['filter']:
