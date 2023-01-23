@@ -1,7 +1,5 @@
-import json
-
 import requests
-from flask import Blueprint, request, render_template, make_response
+from flask import Blueprint, request, make_response
 
 mod = Blueprint('flask_z8', __name__)
 # DEBUGOWANIE KODU - AUTOMATYCZNE WPISANIE GRZEJNIKA
